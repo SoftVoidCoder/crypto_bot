@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bybit-gridbot"
+version = "0.1.0"
+description = "Paper-first USDT perpetual grid bot research scaffold"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "numpy>=2.0,<3",
+  "pandas>=2.2,<3",
+  "pybit>=5.9,<6",
+  "python-dotenv>=1.0,<2",
+  "scikit-learn>=1.5,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9"]
+ui = ["PySide6>=6.8,<7", "pyinstaller>=6.10,<7"]
+
+[project.scripts]
+gridbot = "gridbot.cli:main"
+gridbot-ui = "gridbot.ui:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gridbot"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schema.freqtrade.io/schema.json",
+  "dry_run": false,
+  "exchange": {
+    "name": "bybit",
+    "ccxt_config": {
+      "sandbox": true,
+      "options": {
+        "defaultType": "swap"
+      }
+    },
+    "ccxt_async_config": {
+      "sandbox": true,
+      "options": {
+        "defaultType": "swap"
+      }
+    },
+    "pair_whitelist": [
+      "BTC/USDT:USDT",
+      "ADA/USDT:USDT",
+      "DOGE/USDT:USDT"
+    ],
+    "pair_blacklist": []
+  },
+  "db_url": "sqlite:///ft_user_data/trades-testnet.sqlite"
+}
