@@ -1,0 +1,5 @@
+# Container entrypoint must keep Unix line endings, otherwise the kernel looks
+# for /bin/bash^M and the container exits immediately.
+*.sh text eol=lf
+Dockerfile text eol=lf
+docker/* text eol=lf

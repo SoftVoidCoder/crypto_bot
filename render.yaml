@@ -1,0 +1,96 @@
+# Render Blueprint for RegimeFlow (Freqtrade).
+#
+# This file is optional: the services were created through the Render API. It is
+# kept so the same stack can be reproduced later with "New > Blueprint" in the
+# Render dashboard. Do not create a Blueprint from this file unless you want a
+# second set of services.
+#
+# Free-plan reality check:
+#   * a free web service sleeps after ~15 minutes without inbound HTTP traffic,
+#     and a sleeping container does not trade;
+#   * the free filesystem is ephemeral, so the SQLite trade database is recreated
+#     on every deploy, restart or wake-up;
+#   * free instance hours are pooled across all free services (750/month, i.e.
+#     roughly one always-awake service).
+# Keep one mode running at a time and switch it with the BOT_MODE variable.
+
+services:
+  - type: web
+    name: crypto-bot-dry
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/v1/ping
+    autoDeploy: true
+    envVars:
+      - key: BOT_MODE
+        value: dry
+      - key: FREQTRADE__API_SERVER__USERNAME
+        value: gridpilot
+      - key: FREQTRADE__API_SERVER__PASSWORD
+        sync: false
+      - key: FREQTRADE__API_SERVER__JWT_SECRET_KEY
+        sync: false
+      - key: FREQTRADE__API_SERVER__WS_TOKEN
+        sync: false
+
+  - type: web
+    name: crypto-bot-testnet
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/v1/ping
+    autoDeploy: true
+    envVars:
+      - key: BOT_MODE
+        value: testnet
+      - key: FREQTRADE__API_SERVER__USERNAME
+        value: gridpilot
+      - key: FREQTRADE__API_SERVER__PASSWORD
+        sync: false
+      - key: FREQTRADE__API_SERVER__JWT_SECRET_KEY
+        sync: false
+      - key: FREQTRADE__API_SERVER__WS_TOKEN
+        sync: false
+      # Keys from the separate Bybit Testnet site.
+      - key: FREQTRADE__EXCHANGE__KEY
+        sync: false
+      - key: FREQTRADE__EXCHANGE__SECRET
+        sync: false
+
+  # Real money. Stays locked until FreqUI reports a positive out-of-sample
+  # backtest and testnet has run for weeks - the project README says so too.
+  - type: web
+    name: crypto-bot-mainnet
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/v1/ping
+    autoDeploy: true
+    envVars:
+      - key: BOT_MODE
+        value: mainnet
+      - key: FREQTRADE__API_SERVER__USERNAME
+        value: gridpilot
+      - key: FREQTRADE__API_SERVER__PASSWORD
+        sync: false
+      - key: FREQTRADE__API_SERVER__JWT_SECRET_KEY
+        sync: false
+      - key: FREQTRADE__API_SERVER__WS_TOKEN
+        sync: false
+      - key: FREQTRADE__EXCHANGE__KEY
+        sync: false
+      - key: FREQTRADE__EXCHANGE__SECRET
+        sync: false
+      # Must be exactly I_UNDERSTAND_REAL_MONEY or the container refuses to start.
+      - key: FREQTRADE_REAL_CONFIRM
+        sync: false

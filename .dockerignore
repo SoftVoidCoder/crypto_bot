@@ -1,0 +1,32 @@
+# Only ft_user_data/{configs,strategies} and docker/ are copied into the image,
+# so this file just keeps the build context small.
+.git
+.gitignore
+.venv
+.freqtrade-venv
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/
+src/
+assets/
+dist/
+build/
+*.spec
+*.csv
+*.parquet
+state/
+.env
+.env.*
+!.env.example
+!.env.*.example
+ft_user_data/data/
+ft_user_data/logs/
+ft_user_data/backtest_results/
+ft_user_data/hyperopt_results/
+ft_user_data/notebooks/
+ft_user_data/hyperopts/
+ft_user_data/*.sqlite*
+README.md
+FREQTRADE_RU.md
+uv.lock
