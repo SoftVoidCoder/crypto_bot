@@ -2,7 +2,7 @@ name: keep-render-awake
 
 # Render's free plan stops a web service after ~15 minutes without inbound
 # traffic, and a stopped container does not trade. This scheduled ping keeps
-# crypto-bot-dry awake so the dry-run loop keeps evaluating candles.
+# both bots awake.
 #
 # GitHub's scheduler can run a few minutes late under load, which is fine: the
 # ping also wakes an already-sleeping instance.
@@ -22,25 +22,30 @@ concurrency:
 jobs:
   ping:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        url:
+          - https://crypto-bot-testnet-k0px.onrender.com/api/v1/ping
+          - https://crypto-bot-mainnet.onrender.com/api/v1/ping
     steps:
-      - name: Ping the bot and confirm it answers
+      - name: Ping ${{ matrix.url }}
         run: |
           set -uo pipefail
-          URL="https://crypto-bot-dry.onrender.com/api/v1/ping"
 
           for attempt in 1 2 3; do
             body=$(mktemp)
-            code=$(curl -sS -o "$body" -w '%{http_code}' --max-time 120 "$URL" 2>/dev/null || echo 000)
+            code=$(curl -sS -o "$body" -w '%{http_code}' --max-time 120 "${{ matrix.url }}" 2>/dev/null || echo 000)
             echo "attempt $attempt: HTTP $code $(cat "$body")"
             rm -f "$body"
 
             if [ "$code" = "200" ]; then
-              echo "bot is awake"
+              echo "awake: ${{ matrix.url }}"
               exit 0
             fi
             sleep 20
           done
 
-          echo "::error::crypto-bot-dry did not answer 200 on /api/v1/ping"
+          echo "::error::${{ matrix.url }} did not answer 200"
           exit 1
