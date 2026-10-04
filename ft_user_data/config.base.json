@@ -78,7 +78,12 @@
     "enable_openapi": false,
     "jwt_secret_key": "change-this-local-jwt-secret-32-chars",
     "ws_token": "change-this-local-ws-token-32-chars",
-    "CORS_origins": [],
+    "CORS_origins": [
+      "http://localhost:8080",
+      "http://127.0.0.1:8080",
+      "https://crypto-bot-mainnet.onrender.com",
+      "https://crypto-bot-testnet-k0px.onrender.com"
+    ],
     "username": "gridpilot",
     "password": "change-me-now"
   },
